@@ -1,67 +1,28 @@
 {
-  "name": "api-anything",
-  "version": "0.1.0",
-  "description": "Learn reusable operations from a website's browser traffic and call them from a CLI, library or MCP server.",
+  "name": "api-anything-public-only",
+  "version": "0.1.0-restricted.1",
+  "description": "Restricted anonymous public HTTPS runner; no browser, credentials, writes or healing.",
+  "private": true,
   "license": "MIT",
   "type": "module",
-  "bin": {
-    "api-anything": "dist/cli.js"
-  },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
-  },
-  "files": [
-    "dist",
-    "sites",
-    "skills",
-    "README.md",
-    "LICENSE",
-    "examples",
-    "docs/*.md",
-    "CONTRIBUTING.md"
-  ],
   "engines": {
     "node": ">=22.13.0"
   },
-  "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "prepare": "tsc -p tsconfig.build.json",
-    "cli": "tsx src/cli.ts",
-    "test": "node --import tsx --test test/*.test.ts test/edge/*.test.ts",
-    "check": "tsc -p tsconfig.json",
-    "lint": "biome ci .",
-    "format": "biome check --write .",
-    "demo": "node examples/research.mjs"
+  "bin": {
+    "api-anything": "safe-public.mjs"
   },
-  "keywords": [
-    "api",
-    "reverse-engineering",
-    "mcp",
-    "agents",
-    "scraping",
-    "self-healing",
-    "claude-code"
+  "main": "safe-public.mjs",
+  "exports": {
+    ".": "./safe-public.mjs"
+  },
+  "files": [
+    "safe-public.mjs",
+    "README.md",
+    "LICENSE",
+    "safe-public.test.mjs"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/goodnight000/api-anything.git"
-  },
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.32.1",
-    "node-html-parser": "^9.0.4",
-    "playwright-core": "^1.63.0",
-    "tldts": "^7.4.16",
-    "zod": "^4.6.5"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "2.5.15",
-    "@types/node": "^26.6.3",
-    "tsx": "^4.23.15",
-    "typescript": "^7.0.2"
+  "scripts": {
+    "test": "node --test safe-public.test.mjs",
+    "check": "node --check safe-public.mjs"
   }
 }
