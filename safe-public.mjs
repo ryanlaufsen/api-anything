@@ -21,8 +21,10 @@ export function publicAddress(address) {
 export function validateURL(raw) {
   if (typeof raw !== 'string' || raw.length > 4096) throw Error('Invalid URL');
   const u = new URL(raw);
+  if(raw!==u.href)throw Error('URL must already be canonical; no normalization allowed');
   if (u.protocol !== 'https:' || u.username || u.password || u.hash || (u.port && u.port!=='443'))
     throw Error('HTTPS on port 443 only; credentials and fragments are forbidden');
+  if (u.hostname.endsWith('.')) throw Error('Trailing-dot hostname forbidden');
   if (isIP(u.hostname) || !u.hostname.includes('.') || /(^|\.)(localhost|local|internal|test|invalid)$/i.test(u.hostname))
     throw Error('Public DNS hostname required');
   if (/%(?:00|0a|0d)/i.test(u.href)) throw Error('Control characters forbidden');
@@ -65,7 +67,7 @@ export async function run(spec,policy,{network=false,resolver=lookup,transport=h
   return await new Promise((resolve,reject)=>{
     const req=transport(url,{method,headers:{accept:'application/json,text/plain','accept-encoding':'identity'},
       // The address checked above is the address used by TLS. Hostname verification remains on.
-      lookup:(_host,opts,cb)=>opts.all?cb(null,[pin]):cb(null,pin.address,pin.family),agent:false},res=>receive(res,resolve,reject));
+      lookup:(_host,opts,cb)=>opts.all?cb(null,[pin]):cb(null,pin.address,pin.family),agent:false,rejectUnauthorized:true},res=>receive(res,resolve,reject));
     const timer=setTimeout(()=>req.destroy(Error('Total request deadline exceeded')),10_000);
     req.on('error',reject);req.on('close',()=>clearTimeout(timer));req.end();
   });
